@@ -10,7 +10,7 @@ typedef struct PNode{
 //10 0 -4 2 5 1 2 4 3 3
 void createPoly(Polynomial &p, int n){
     p = new PNode;
-    p->next = NULL;
+    p->next = nullptr;
     PNode *s,*pre,*q;
     for(int i=0;i<n;i++){
         s = new PNode;

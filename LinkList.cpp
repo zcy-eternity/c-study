@@ -9,7 +9,7 @@ int init(LinkList &L){
     L = new LNode;
     if(!L)
         return -1;
-    L->next = NULL;
+    L->next = nullptr;
     return 0;
 }
 void createLinkList1(LinkList &L){
@@ -31,7 +31,7 @@ void createLinkList2(LinkList &L){
     while (n!=-1){
         p = new LNode;
         p->data = n;
-        p->next = NULL;
+        p->next = nullptr;
         r->next = p;
         r = p;
         cin>>n;

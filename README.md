@@ -119,12 +119,72 @@ char greeting[6] = {'H','e','l','l','o','\0'}; //这是一个字符串
 ```c++
 char greeting[] = "Hello";
 ```
-- 一些常用函数 
+初始化字符数组后可修改声明的字符数组中的字符，
+也可重新写入，但写入后原来的字符数组中的值消失
+```c++
+char a[] = "hello";
+cin>>a;
+```
+- 作为局部变量的字符数组不能直接返回，而字符指针可以 
+- 调用者也不能用数组来接受返回值，要用指针来接，否则会报异常
+```c++
+//错误
+char* fork_user_name(){
+    char name[] = "zcy";
+    return name;
+}
+//正确
+char* fork_user_name2(){
+    char *name = "zcy";
+    return name;
+}
+
+char *str = fork_user_name2();
+```
+首先我们要知道，常量是放在数据段里面的。 局部变量 name 保存在栈中
+字符串的值是一个常量，保存在常量区。即便函数返回了，数据段里面的常量数据也还不会消亡
+它会直到程序结束才会消失，其内存空间直到程序运行结束才会被释放。
+所以，返回的地址是一个实际存在的有效地址。
+
+
+- next数组
+```c++
+  int* get_next(char str[]){
+      int i=0,j=-1;
+      int *next = new int[strLen(str)+1];
+      next[0] = -1;
+      while (i<strLen(str)){
+          if(str[i]==str[j]||j==-1){
+              i++;
+              j++;
+              next[i]=j;
+          } else
+              j = next[j];
+      }
+      return next;
+  }
+```
+next数组的随着i指针的更新而更新<br>
+i指针更新有两种情况：<br>
+第一种是第一个字符就失配 j = -1    第二种是字符出现匹配i指针后移<br>
+a b a a b c<br>
+第一次循环j=-1;<br>
+i j 指针同时会后移 next[1] = 0   i从第二个字符开始，j从第一个字符开始比较<br>
+a b a a b c <br>
+&nbsp;&nbsp;&nbsp;a b a a b c
+第二次循环<br>
+失配 j = next[0] (-1) 模式串滑动 i++ next[2] = 0; j++<br>
+a b a a b c<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a b a a b c<br>
+第三次循环<br>
+第一个字符匹配 i++ j++  next[3]= 1 第二个字符失配 j回到next[j]的位置<br>
+
+- 一些常用函数
 
 | 序号 | 函数 |                            功能 |
 | --- |:---:|------------------------------:|
 |1|strcpy(s1,s2)|              复制字符串 s2 到字符串 s1 |
-|2|strcat(s1,s2)(s1,s2)|          连接字符串 s2 到字符串 s1 的末尾 |
+|2|strcat(s1,s2)|          连接字符串 s2 到字符串 s1 的末尾 |
 |3|strlen(s1)|                  返回字符串 s1 的长度 |
 |4|strcmp(s1,s2)|                  返回s1与s2的比较结果 |
 |5|strchr(s1,ch)|  返回一个指针，指向字符串s1中字符ch的第一次出现的位置 |

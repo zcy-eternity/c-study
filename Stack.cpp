@@ -42,7 +42,7 @@ bool stackEmpty(SqStack s){
 
 //-------------------------------
 void initStack(LinkStack &s){
-    s = NULL;
+    s = nullptr;
 }
 int push(LinkStack &s, int x){
     StackNode *p = new StackNode;
@@ -61,7 +61,7 @@ int pop(LinkStack &s, int &x){
     return 0;
 }
 bool stackEmpty(LinkStack s){
-    if(s==NULL)
+    if(s== nullptr)
         return true;
     else
         return false;

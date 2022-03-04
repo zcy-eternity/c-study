@@ -53,12 +53,12 @@ bool QueueEmpty(SqQueue q){
 // -------------------------------
 void init(LinkQueue &q){
     q.rear = q.front = new QNode;
-    q.front->next = NULL;
+    q.front->next = nullptr;
 }
 void EnQueue(LinkQueue &q, int x){
     QNode *s = new QNode;
     s->data = x;
-    s->next = NULL;
+    s->next = nullptr;
     q.rear->next = s;
     q.rear = s;
 }
