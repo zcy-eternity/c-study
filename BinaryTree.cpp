@@ -25,6 +25,16 @@ typedef struct CSNode{
     struct CSNode *firstchild,*nextsibling;
 }CSNode,*CSTree;
 
+typedef struct BSTNode{
+    int key;
+    struct BSTNode *lchild,*rchild;
+}BSTNode,*BSTree;
+
+typedef struct{
+    int weight;
+    int parent,lchild,rchild;
+}HTNode,*HuffmanTree;
+
 void initStack(LinkStack &s){
     s = nullptr;
 }
@@ -44,7 +54,7 @@ bool StackEmpty(LinkStack s){
     if(!s)
         return true;
     else
-       return false;
+        return false;
 }
 void initBiTree(BiTree &T){
     T = nullptr;
@@ -96,6 +106,7 @@ void inOrder(BiThrTree T){
         }    //若结点有右线索，循环输出
         T = T->rchild; //结点无右线索，开始转向右子树，循环未退出，找到右子树中中序遍历的第一个结点输出
     }
+    cout<<endl;
 }
 void inOrderTraverse(BiTree T){
     LinkStack s;
@@ -169,8 +180,8 @@ void PreThreading(BiThrTree &T){
         pre = T;
         if(T->lTag == 0)
             PreThreading(T->lchild); //先序线索化会出现转圈问题
-            // 当前结点的左指针为空时会进行线索化，此时左孩子指针会指向pre
-            // 接下来要对当前结点的左孩子进行线索化也就是pre进行线索化 出现循环
+        // 当前结点的左指针为空时会进行线索化，此时左孩子指针会指向pre
+        // 接下来要对当前结点的左孩子进行线索化也就是pre进行线索化 出现循环
         PreThreading(T->rchild);
     }
 }
@@ -181,9 +192,162 @@ void InOrderThreading(BiThrTree &T){
         pre->rTag = 1; //pre指向中序遍历最后一个结点 最后一个结点一定没有右孩子
     }
 }
+//查找二叉排序树
+BSTNode *BST_Search1(BSTree T,int key){
+    if(T == nullptr){
+        return nullptr;
+    }else if (T->key == key)
+        return T;
+    else if(T->key < key)
+        return BST_Search1(T->rchild,key);
+    else
+        return BST_Search1(T->lchild,key);
+}
+BSTNode *BST_Search2(BSTree T, int key){
+    while (T&&T->key!=key){
+        if(T->key < key)
+            T = T->rchild;
+        if(T->key > key)
+            T = T->lchild;
+    }
+    return T;
+}
+//二叉排序树的插入
+int BST_insert(BSTree &T, int key){
+    if(T == nullptr){
+        T = new BSTNode;
+        T->key = key;
+        T->lchild = nullptr;
+        T->rchild = nullptr;
+        return 1;
+    } else if(T->key == key) //树中存在关键字相同的结点，插入失败
+        return 0;
+    else if(T->key < key)
+        BST_insert(T->rchild,key);
+    else
+        BST_insert(T->lchild,key);
+}
+void create_BST(BSTree &T, const int key[], int n){
+    for(int i=0;i<n;i++)
+        BST_insert(T,key[i]);
+}
+void Select1(HuffmanTree HT,int n, int &s1, int &s2){ //不能用交换排序，此方法错误
+    int flag;
+    int index[n+1];//记录HT的下标，防止交换时丢失下标
+    for(int i=1;i<=n;i++)
+        index[i] = i;
+    for(int i=1;i<n;i++){
+        flag = 0;
+        for(int j=1;j<n-i+1;j++){
+            if(HT[j].weight>HT[j+1].weight){
+                swap(HT[j],HT[j+1]);
+                swap(index[j],index[j+1]);
+                flag = 1;
+            }
+        }
+        if(flag == 0)
+            break;
+    }
+
+    int k=0,a[2];
+    for(int i=1;i<=n;i++){
+        if(k==2) //k = 2时跳出循环
+            break;
+        if(HT[i].parent==0){
+            a[k++] = index[i];
+        }
+    }
+    s1 = a[0];
+    s2 = a[1];
+}
+void Select2(const HuffmanTree HT,int n, int &s1, int &s2) {
+    int min=0;
+    //记录下最小元素的位置
+    for(int i=1;i<=n;i++)
+        if(HT[i].parent==0){
+            min = i;
+            break;
+        }
+    for(int i=min+1;i<=n;i++){
+        if(HT[i].weight<HT[min].weight&&HT[i].parent==0)
+            min = i; //更新最小元素位置
+    }
+    s1 = min;
+    for(int i=1;i<=n;i++)
+        if(HT[i].parent==0&&i!=min){
+            min = i;
+            break;
+        }
+    for(int i=min+1;i<=n;i++){
+        if(HT[i].weight<HT[min].weight&&HT[i].parent==0&&i!=s1)
+            min = i;
+    }
+    s2 = min;
+}
+
+void CreateHuffmanTree(HuffmanTree &HT,int n){
+    HT = new HTNode[2*n];//0号单元未用，n个叶子结点的哈夫曼树共有2n-1个结点
+    for(int i=1;i<=2*n-1;i++)
+        HT[i].parent = HT[i].lchild = HT[i].rchild = 0;
+    for(int i=1;i<=n;i++)
+        cin>>HT[i].weight;
+    int s1,s2;
+    for(int i=n+1;i<=2*n-1;i++){
+        Select2(HT,i-1,s1,s2); //在HT[0~i-1]选择双亲域为0且权值最小的两个结点
+        HT[s1].parent = i;
+        HT[s2].parent = i;
+        HT[i].lchild = s1;
+        HT[i].rchild = s2;
+        HT[i].weight = HT[s1].weight + HT[s2].weight;
+    }
+}
+int WPL(HuffmanTree HT,int n){
+    int wpl = 0,j;
+    int l;//路径长度，不是深度
+    for(int i=1;i<=n;i++){
+        l = 0;
+        j = i;
+        while (HT[j].parent!=0){
+            l++;
+            j = HT[j].parent;
+        }
+        wpl+=HT[i].weight*l;
+    }
+    return wpl;
+}
+void copy1(char str1[],const char str2[],int start){
+    int i = start+1;
+    int j = 0;
+    while (str2[i]!='\0')
+        str1[j++] = str2[i++];
+    str1[j] = '\0';
+}
+void HuffmanCoding(HuffmanTree &HT,int n, char ** &HC){
+    HC = new char*[n+1];
+    char *cd = new char[n];
+    cd[n-1] = '\0';
+    int f,pre1,end;
+    for(int i=1;i<=n;i++){
+        f = HT[i].parent; //初值
+        pre1 = i;
+        end = n-2; //注意在循环内
+        while (f!=0){ //从叶子节点向上回溯，直到根结点
+            if(pre1==HT[f].lchild)
+                cd[end--] = '0';
+            else
+                cd[end--] = '1';
+            pre1 = f;
+            f = HT[f].parent;
+        }
+        HC[i] = new char[n-2-end+1];
+        copy1(HC[i],cd,end);
+    }
+
+}
 int main(){
     BiTree T;
     initBiTree(T);
+//    ABC##DE#G##F###
     cout<<"建立二叉树 请输入："<<endl;
     createBiTree(T);
     cout<<"已建立二叉树的中序遍历序列(递归)为："<<endl;
@@ -209,4 +373,30 @@ int main(){
     InOrderThreading(Thr);
     cout<<"线索二叉树的中序遍历序列为："<<endl;
     inOrder(Thr);
+
+    BSTree BST;
+    BST = nullptr;
+    int key[] = {50,66,60,26,21,30,70,68};
+    int n = sizeof(key)/sizeof(key[0]);
+    cout<<"建立二叉排序树{50,66,60,26,21,30,70,68}"<<endl;
+    create_BST(BST,key,n);
+    cout<<"在二叉排序树中查找66的结点: "<<BST_Search1(BST,66)->key<<endl<<"排序树中66结点的左孩子结点为："<<BST_Search2(BST,66)->lchild->key<<endl;
+
+    HuffmanTree HT;
+//    5 29 7 8 14 23 3 11
+    cout<<"输入哈夫曼树叶子结点的权值："<<endl;
+    CreateHuffmanTree(HT,8);
+    cout<<"树的带权路径长度为："<<WPL(HT,8)<<endl;
+    char **HC;
+    cout<<"对应的哈夫曼编码为："<<endl;
+    HuffmanCoding(HT,8,HC);
+    int j;
+    for(int i=1;i<=8;i++){
+        j = 0;
+        while (HC[i][j]!='\0'){
+            cout<<HC[i][j];
+            j++;
+        }
+        cout<<endl;
+    }
 }
