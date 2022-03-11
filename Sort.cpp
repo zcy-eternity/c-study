@@ -1,10 +1,44 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
+
 
 typedef struct LNode{
     int data;
     struct LNode *next;
 }LNode,*LinkList;
+typedef struct {
+   LNode *front,*rear;
+}LinkQueue;
+void init(LinkQueue &Q){
+    Q.front = new LNode;
+    Q.rear = Q.front;
+    Q.front->next = nullptr;
+}
+void EnQueue(LinkQueue &Q, int x){
+    auto *s = new LNode;
+    s->data = x;
+    s->next = nullptr;
+    Q.rear->next = s;
+    Q.rear = s;
+}
+int DeQueue(LinkQueue &Q, int &x){
+    if(Q.rear == Q.front)
+        return 0;
+    LNode *p = Q.front->next;
+    x = p->data;
+    Q.front->next = p->next;
+    if(p == Q.rear)
+        Q.rear = Q.front;
+    delete p;
+    return 1;
+}
+bool QueueEmpty(LinkQueue Q){
+    if(Q.front == Q.rear)
+        return true;
+    else
+        return false;
+}
 void create(LinkList &L){
     L = new LNode; //初始化
     L->next = nullptr;
@@ -178,6 +212,67 @@ void HeapSort(int a[],int len){
  * 若小于顶元素,则替换顶元素,并调整堆adjustHeap
  * 最大的10个数构建小根堆
  */
+void merge(int a[], int low, int mid, int high){
+    int b[100];
+    for(int i=low;i<=high;i++)
+        b[i] = a[i];
+    int i=low,j=mid+1;
+    while (i<=mid&&j<=high){
+        while (i<=mid&&b[i]<=b[j]) //加上i<=mid 防止while循环时i指针越界
+            a[low++] = b[i++];     // 两元素相等时优先使用靠前的那个保持稳定性
+        while (j<=high&&b[i]>b[j])
+            a[low++] = b[j++];
+    }
+    while (i<=mid)
+        a[low++] = b[i++];
+    while (j<=high)
+        a[low++] = b[j++];
+}
+//归并排序
+void MergeSort(int a[],int low,int high){
+    if(low<high){
+        int mid = (low+high)/2;
+        MergeSort(a,low,mid);
+        MergeSort(a,mid+1,high);
+        merge(a,low,mid,high);
+    }
+}
+//基数排序
+void RadixSort(int a[], int d, int n){ //把关键字分为d个部分
+    LinkQueue Q[10];
+    for(auto & i : Q)
+        init(i);
+    int pre,r;
+    for(int i=0;i<d;i++){
+        for(int j=0;j<n;j++)
+            for(int k=0;k<10;k++)
+                if(a[j]/(int)pow(10,i)%10 == k){
+                    EnQueue(Q[k],a[j]);
+                    break;
+                }
+        pre = -1;
+        for(int m=0;m<10;m++){
+            if(!QueueEmpty(Q[m])&&pre==-1){ //设置pre初值
+                pre = m;
+                r = m; //r记录队列的起始位置
+                continue;
+            }
+            if(!QueueEmpty(Q[m])){
+                Q[pre].rear->next = Q[m].front->next;
+                pre = m;
+            }
+        }
+        LNode *p = Q[r].front->next;
+        int q = 0;
+        while (p!= nullptr){
+            a[q++] = p->data;
+            p = p->next;
+        }
+        for(r=0;r<10;r++)
+            init(Q[r]);
+    }
+
+}
 int main(){
 //    int a[] = {1,8,5,2,23,6,12,7,8};
 //    QuickSort(a,0,8);
@@ -187,12 +282,17 @@ int main(){
 //    print(L);
 //    ShellSort(a,9);
 //    1 8 5 2 23 6 12 7 8
-    int a[10];
-    for(int i=1;i<=9;i++)
-        cin>>a[i];
-    BuildMaxHeap(a,9);
-    HeapSort(a,9);
-    for(int i=1;i<=9;i++)
+//    int a[10];
+//    for(int i=1;i<=9;i++)
+//        cin>>a[i];
+//    BuildMaxHeap(a,9);
+//    HeapSort(a,9);
+//    MergeSort(a,1,9);
+//    for(int i=1;i<=9;i++)
+//        cout<<a[i]<<" ";
+//    return 0;
+int a[] = {123,324,343,445,908,356,456,424};
+    RadixSort(a,3,8);
+    for(int i=0;i<8;i++)
         cout<<a[i]<<" ";
-    return 0;
 }
