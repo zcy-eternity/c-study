@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <stack>
 using namespace std;
 
 typedef struct BiTNode{
@@ -95,6 +95,13 @@ void inOrder(BiTree T){
         inOrder(T->rchild);
     }
 }
+void postOrder(BiTree T){
+    if(T){
+        postOrder(T->lchild);
+        postOrder(T->rchild);
+        cout<<T->data<<" ";
+    }
+}
 void inOrder(BiThrTree T){
     while (T){
         while (T->lTag==0)
@@ -108,18 +115,80 @@ void inOrder(BiThrTree T){
     }
     cout<<endl;
 }
-void inOrderTraverse(BiTree T){
+//中序遍历非递归
+void inOrderTraverse1(BiTree T){
     LinkStack s;
     initStack(s);
     BiTNode *p = T,*q;
-    while (p || !StackEmpty(s)){
-        if(p){            //栈非空的情况
-            push(s,p);
+    while (p || !StackEmpty(s)){ //右子树为空时循环不终止，直到栈空为止
+        if(p){
+            push(s,p); //第一次访问到根结点并不访问，而是入栈
+            p = p->lchild; //转向左子树
+        } else{ //左子树为空
+            pop(s,q);  //左子树遍历结束后，第二次遇到根结点，就将根结点（指针）退栈，并且访问根结点
+            cout<<q->data<<" ";
+            p = q->rchild; //转向右子树
+        }
+    }
+}
+void inOrderTraverse2(BiTree T){
+    stack<BiTree> s;
+    BiTNode *p = T,*q;
+    while (p || !s.empty()){
+        if(p){
+            s.push(p);
             p = p->lchild;
         } else{
-            pop(s,q);
-            cout<<q->data<<" ";
+           q = s.top();
+           s.pop();
+           cout<<q->data<<" ";
+           p = q->rchild;
+        }
+    }
+}
+//先序非递归
+void preOrderTraverse(BiTree T){
+    stack<BiTree> s;
+    BiTNode *p = T,*q;
+    while (p || !s.empty()){
+        if(p){
+            cout<<p->data<<" ";
+            s.push(p);
+            p = p->lchild;
+        } else{
+            q = s.top();
+            s.pop();
             p = q->rchild;
+        }
+    }
+}
+
+/*
+对于任一结点P，将其入栈，然后沿其左子树一直往下搜索，
+ 直到搜索到没有左孩子的结点，此时该结点出现在栈顶，
+ 但是此时不能将其出栈并访问， 因此其右孩子还为被访问。
+ 所以接下来按照相同的规则对其右子树进行相同的处理，
+ 当访问完其右孩子时，该结点又出现在栈顶，此时可以将其出栈并访问
+*/
+
+//后序非递归
+void postOrderTraverse(BiTree T){
+    stack<BiTree> s;
+    BiTNode *p = T,*q,*r; //r标记右子树是否访问过
+    while (p||!s.empty()){
+        if(p){
+            s.push(p);
+            p = p->lchild;
+        } else{
+            q = s.top();
+            if(q->rchild != nullptr && q->rchild!=r) //右子树不为空且右子树没有访问过，转向右子树
+                p = q->rchild;
+            else{
+                s.pop();  //右子树为空或是访问过出栈访问
+                cout<<q->data<<" ";
+                r = q; //标记当前结点访问过了
+                p = nullptr; //访问完一个结点之后需要置空，不置空的话又会把这个结点压进去
+            }
         }
     }
 }
@@ -344,59 +413,69 @@ void HuffmanCoding(HuffmanTree &HT,int n, char ** &HC){
     }
 
 }
+//int main(){
+//    BiTree T;
+//    initBiTree(T);
+////    ABC##DE#G##F###
+//    cout<<"建立二叉树 请输入："<<endl;
+//    createBiTree(T);
+//    cout<<"已建立二叉树的中序遍历序列(递归)为："<<endl;
+//    inOrder(T);
+//    cout<<endl;
+//    cout<<"已建立二叉树的中序遍历序列(非递归)为："<<endl;
+//    inOrderTraverse(T);
+//    cout<<endl;
+//    cout<<"已建立二叉树的树高为："<<endl;
+//    cout<<Depth(T)<<endl;
+//    cout<<"已建立二叉树的结点数为："<<endl;
+//    cout<<NodeCount(T)<<endl;
+//    BiTree newT;
+//    initBiTree(newT);
+//    Copy(T,newT);
+//    cout<<"拷贝二叉树的中序遍历序列为："<<endl;
+//    inOrder(newT);
+//    cout<<endl;
+//    BiThrTree Thr;
+//    Thr = nullptr;
+//    cout<<"建立线索二叉树 请输入："<<endl;
+//    createBiThrTree(Thr);
+//    InOrderThreading(Thr);
+//    cout<<"线索二叉树的中序遍历序列为："<<endl;
+//    inOrder(Thr);
+//
+//    BSTree BST;
+//    BST = nullptr;
+//    int key[] = {50,66,60,26,21,30,70,68};
+//    int n = sizeof(key)/sizeof(key[0]);
+//    cout<<"建立二叉排序树{50,66,60,26,21,30,70,68}"<<endl;
+//    create_BST(BST,key,n);
+//    cout<<"在二叉排序树中查找66的结点: "<<BST_Search1(BST,66)->key<<endl<<"排序树中66结点的左孩子结点为："<<BST_Search2(BST,66)->lchild->key<<endl;
+//
+//    HuffmanTree HT;
+////    5 29 7 8 14 23 3 11
+//    cout<<"输入哈夫曼树叶子结点的权值："<<endl;
+//    CreateHuffmanTree(HT,8);
+//    cout<<"树的带权路径长度为："<<WPL(HT,8)<<endl;
+//    char **HC;
+//    cout<<"对应的哈夫曼编码为："<<endl;
+//    HuffmanCoding(HT,8,HC);
+//    int j;
+//    for(int i=1;i<=8;i++){
+//        j = 0;
+//        while (HC[i][j]!='\0'){
+//            cout<<HC[i][j];
+//            j++;
+//        }
+//        cout<<endl;
+//    }
+//}
 int main(){
     BiTree T;
     initBiTree(T);
-//    ABC##DE#G##F###
-    cout<<"建立二叉树 请输入："<<endl;
     createBiTree(T);
-    cout<<"已建立二叉树的中序遍历序列(递归)为："<<endl;
-    inOrder(T);
+    preOrderTraverse(T);
     cout<<endl;
-    cout<<"已建立二叉树的中序遍历序列(非递归)为："<<endl;
-    inOrderTraverse(T);
+    postOrderTraverse(T);
     cout<<endl;
-    cout<<"已建立二叉树的树高为："<<endl;
-    cout<<Depth(T)<<endl;
-    cout<<"已建立二叉树的结点数为："<<endl;
-    cout<<NodeCount(T)<<endl;
-    BiTree newT;
-    initBiTree(newT);
-    Copy(T,newT);
-    cout<<"拷贝二叉树的中序遍历序列为："<<endl;
-    inOrder(newT);
-    cout<<endl;
-    BiThrTree Thr;
-    Thr = nullptr;
-    cout<<"建立线索二叉树 请输入："<<endl;
-    createBiThrTree(Thr);
-    InOrderThreading(Thr);
-    cout<<"线索二叉树的中序遍历序列为："<<endl;
-    inOrder(Thr);
-
-    BSTree BST;
-    BST = nullptr;
-    int key[] = {50,66,60,26,21,30,70,68};
-    int n = sizeof(key)/sizeof(key[0]);
-    cout<<"建立二叉排序树{50,66,60,26,21,30,70,68}"<<endl;
-    create_BST(BST,key,n);
-    cout<<"在二叉排序树中查找66的结点: "<<BST_Search1(BST,66)->key<<endl<<"排序树中66结点的左孩子结点为："<<BST_Search2(BST,66)->lchild->key<<endl;
-
-    HuffmanTree HT;
-//    5 29 7 8 14 23 3 11
-    cout<<"输入哈夫曼树叶子结点的权值："<<endl;
-    CreateHuffmanTree(HT,8);
-    cout<<"树的带权路径长度为："<<WPL(HT,8)<<endl;
-    char **HC;
-    cout<<"对应的哈夫曼编码为："<<endl;
-    HuffmanCoding(HT,8,HC);
-    int j;
-    for(int i=1;i<=8;i++){
-        j = 0;
-        while (HC[i][j]!='\0'){
-            cout<<HC[i][j];
-            j++;
-        }
-        cout<<endl;
-    }
+    postOrder(T);
 }
