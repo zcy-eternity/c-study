@@ -9,7 +9,7 @@ int init(LinkList &L){
     L = new LNode;
     if(!L)
         return -1;
-    L->next = NULL;
+    L->next = nullptr;
     return 0;
 }
 void createLinkList1(LinkList &L){
@@ -27,11 +27,11 @@ void createLinkList1(LinkList &L){
 void createLinkList2(LinkList &L){
     int n;
     cin>>n;
-    LNode *p,*r = L;
+    LNode *p,*r = L;//r为尾指针
     while (n!=-1){
         p = new LNode;
         p->data = n;
-        p->next = NULL;
+        p->next = nullptr;
         r->next = p;
         r = p;
         cin>>n;
@@ -44,7 +44,7 @@ int insert(LinkList &L, int i, int e){
     while (p&&j<i){
         p = p->next;
         j++;
-    }
+    }//跳出循环时p指向待插入位置的前驱
     if(i<1||!p)
         return -1;
     LNode *s = new LNode;
