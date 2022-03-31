@@ -6,11 +6,11 @@ typedef struct {
     int data[MaxSize];
     int top;
 }SqStack;
+
 typedef struct StackNode{
     int data;
     struct StackNode *next;
 }StackNode,*LinkStack;
-
 
 void initStack(SqStack &s){
     s.top = -1;
@@ -41,11 +41,11 @@ bool stackEmpty(SqStack s){
 }
 
 //-------------------------------
-void initStack(LinkStack &s){
+void initStack(LinkStack &s){ //链栈无头结点 栈顶位于链栈头
     s = nullptr;
 }
 int push(LinkStack &s, int x){
-    StackNode *p = new StackNode;
+    StackNode *p = new StackNode; //链栈不存在上限
     p->data = x;
     p->next = s;
     s = p;
@@ -89,7 +89,7 @@ void print(SqStack s){
 void conversion(int n, int r){
     SqStack s;
     initStack(s);
-    while (n){
+    while (n){ //n=0 跳出循环
         push(s,n%r);
         n /= r;
     }
@@ -121,7 +121,7 @@ bool bracketMatching(){
                     else
                         flag = 0;
                 } else
-                    flag = 0;
+                    flag = 0; //栈空，没有与之匹配的左括号
                 break;
             case ']':
                 if(!stackEmpty(s)){

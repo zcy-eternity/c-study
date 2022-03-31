@@ -16,7 +16,7 @@ char* subStr(const char str[],int pos,int len){
         subStr[i-pos+1] = str[i];
     }
     subStr[i-pos+1] = '\0';
-    return subStr;
+    return subStr; //不能返回作为局部变量的字符数组，但字符指针可以
 }
 int strCompare(const char str1[], const char str2[]){
     int len1 = strLen(str1);

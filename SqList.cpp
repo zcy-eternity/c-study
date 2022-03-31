@@ -6,6 +6,7 @@ typedef struct {
     int *data;
     int length;
 }SqList;
+
 int init(SqList &L){
     L.data = new int[MaxSize];
     if(!L.data)
@@ -41,6 +42,7 @@ int insert(SqList &L, int i, int e){
     L.length++;
     return 0;
 }
+//有序表合并
 void mergeList(SqList la, SqList lb, SqList &lc){
     lc.length = la.length + lb.length;
     lc.data = new int[lc.length];

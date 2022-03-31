@@ -12,6 +12,7 @@ int init(LinkList &L){
     L->next = nullptr;
     return 0;
 }
+//头插
 void createLinkList1(LinkList &L){
     int n;
     cin>>n;
@@ -24,6 +25,7 @@ void createLinkList1(LinkList &L){
         cin>>n;
     }
 }
+//尾插
 void createLinkList2(LinkList &L){
     int n;
     cin>>n;
@@ -36,7 +38,6 @@ void createLinkList2(LinkList &L){
         r = p;
         cin>>n;
     }
-
 }
 int insert(LinkList &L, int i, int e){
     LNode *p = L;
@@ -57,7 +58,7 @@ int insert(LinkList &L, int i, int e){
 int deleteLNode(LinkList &L, int i){
     LNode *p = L,*q;
     int j = 0;
-    while (p->next&&j<i){
+    while (p->next&&j<i){ //p前驱 p->next待删除元素
         p = p->next;
         j++;
     }
@@ -72,13 +73,13 @@ void mergeList(LinkList L1, LinkList L2, LinkList &L){
     LNode *p1,*p2,*r;
     p1 = L1->next;
     p2 = L2->next;
-    L = L1;
+    L = L1; //利用L1的头结点
     r = L;
     while (p1&&p2){
         if(p1->data <= p2->data){
             r->next = p1;
             p1 = p1->next;
-            r = r->next;
+            r = r->next; // r = p1
         }else{
             r->next = p2;
             p2 = p2->next;

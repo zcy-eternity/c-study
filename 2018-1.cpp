@@ -12,7 +12,7 @@ void create(LinkList &L){
     LNode *s;
     int n;
     cin>>n;
-    while (n!=-1){
+    while (n!=0){
         s = new LNode;
         s->data = n;
         s->next = nullptr;

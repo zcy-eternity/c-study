@@ -18,16 +18,16 @@ void createPoly(Polynomial &p, int n){
         pre = p;
         q = p->next;
         while (q&&q->expn<s->expn){
-            pre = q;
+            pre = q;    //pre找第一个比待插入结点值大或者等于的结点前驱
             q = q->next;
-        }
+        }//跳出循环时q为第一个大于插入结点值的结点
         s->next = q;
         pre->next =s;
     }
 }
 void print(Polynomial p){
     PNode *q = p->next;
-    while (q->next){
+    while (q->next){ //不包括最后一个结点
         if(q->next->coef>0)
             cout<<q->coef<<"x"<<q->expn<<"+";
         else
@@ -54,6 +54,7 @@ void addPoly(Polynomial &p1 , Polynomial p2){
                 s = new PNode;
                 s->coef = L1->coef + L2->coef;
                 s->expn = L1->expn;
+                s->next = nullptr;
                 r->next = s;
                 L1 = L1->next;
                 L2 = L2->next;

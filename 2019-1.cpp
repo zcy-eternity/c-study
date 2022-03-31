@@ -9,7 +9,7 @@ int max_reverse(int a[], int n){
         if(a[i]>max)
             max = a[i];
     }
-    int mid = n/2-1;
+    int mid = (n-1)/2;
     int temp;
     for(int i=0;i<=mid;i++){
         temp = a[i];
@@ -19,9 +19,9 @@ int max_reverse(int a[], int n){
     return max;
 }
 int main(){
-    int a[] = {1,2,3,4,5,6,7,8,9,10};
-    cout<<max_reverse(a,10)<<endl;
-    for(int i=0;i<10;i++)
+    int a[] = {1,2,3,4,5,6,7,8,9};
+    cout<<max_reverse(a,9)<<endl;
+    for(int i=0;i<9;i++)
         cout<<a[i]<<" ";
 }
 

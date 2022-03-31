@@ -79,12 +79,12 @@ void sort(LinkList &L){
                 p->next = q->next;
                 q->next = p;
                 pre->next = q;
-            } else{
-                pre = p;
-                p = q;
-                q = q->next;
             }
-            count--;
+            pre = pre->next;
+            p = pre->next;
+            q = p->next;
+           //无论是否发生交换，都要进行指针的移动 但交换后的指针p、q位置颠倒 pre位置不变  pre = p p = q q = q->next 这是错误的
+           count--;
         }
     }
 }//也可将单链表中元素取出存到数组中，对数组进行排序，重新建立单链表，不推荐
@@ -99,7 +99,7 @@ int main(){
     LinkList L;
     L = new LNode;
     L->next = nullptr;
-//    1 2 3 4 5 6 -1
+//  34 78 24 90 1 34 -1
     create(L);
     cout<<maxValue(L)<<endl;
     int k;

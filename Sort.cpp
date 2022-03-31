@@ -78,9 +78,9 @@ void InsertSort2(int a[], int n){
         low = 0,high = i-1;
         while(low<=high){
             mid = (low+high)/2;
-            if(a[mid]>temp) //当a[min]=temp时为了保证算法的稳定性 应继续在mid所指位置右边寻找插入位置
+            if(a[mid]>temp)
                 high=mid-1;
-            else
+            else           //当a[min]=temp时为了保证算法的稳定性 应继续在mid所指位置右边寻找插入位置
                 low=mid+1;
         }
         for(j=i-1;j>=low;j--)

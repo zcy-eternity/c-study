@@ -2,7 +2,7 @@
 #include <iostream>
 
 using namespace std;
-//判断输入的字符串是否符合a*n b*n c*n 的格式，符合的话输出YES 否则的话输出 NO
+//判断输入的字符串是否符合a*n b*n c*n 的格式，符合的话输出YES 否则的话输出NO
 bool check1(const char str[]){
     int i=0;
     int flag =0; //引入标志位，消除aabbacc

@@ -60,7 +60,7 @@ void initBiTree(BiTree &T){
     T = nullptr;
 }
 //ABC##DE#G##F###
-//先序遍历的顺序建立二叉链表
+//先序遍历的顺序建立二叉树
 void createBiTree(BiTree &T){
     char ch;
     cin>>ch;
@@ -210,7 +210,6 @@ void Copy(BiTree T, BiTree &newT){
         Copy(T->lchild, newT->lchild);
         Copy(T->rchild, newT->rchild);
     }
-
 }
 int NodeCount(BiTree T){
     if(T== nullptr){
