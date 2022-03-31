@@ -36,6 +36,16 @@ void reverse(LinkList &L){
     p->next = L->next;
     L->next = p;
 }
+void reverse2(LinkList &L){
+    LNode *p = L->next,*q;
+    L->next = nullptr;
+    while (p){
+        q = p->next;
+        p->next = L->next;
+        L->next = p;
+        p = q;
+    }
+}
 void print(LinkList L){
     LNode *p = L->next;
     while (p){
