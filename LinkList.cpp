@@ -99,6 +99,48 @@ void print(LinkList L){
         p = p->next;
     }
 }
+void InterSect(LinkList &L1, LinkList L2){
+    LNode *p1 = L1->next;
+    LNode *p2 = L2->next;
+    LNode *r;
+    r = L1;
+    while (p1 && p2){
+        if(p1->data < p2->data)
+            p1 = p1->next;
+        else if(p1->data > p2->data)
+            p2 = p2->next;
+        else{
+            r->next = p1;
+            r = p1;
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+    }
+}
+
+void Except(LinkList &L1, LinkList L2){
+    LNode *p1,*p2,*r;
+    p1 = L1->next;
+    p2 = L2->next;
+    r = L1;
+    while (p1&&p2){
+        if(p1->data<p2->data){
+            r->next = p1;
+            r = p1;
+            p1 = p1->next;
+        } else if(p1->data == p2->data){
+            p1 = p1->next;
+            p2 = p2->next;
+        } else{
+            p2 = p2->next;
+        }
+    }
+    while (p1){
+        r->next = p1;
+        r = p1;
+        p1 = p1->next;
+    }
+}
 int main(){
 //    LinkList L;
 //    init(L);

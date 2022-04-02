@@ -220,6 +220,26 @@ int NodeCount(BiTree T){
         return m+n+1;
     }
 }
+int LeafCount(BiTree T){
+    if(T== nullptr)
+        return 0;
+    else if(!T->lchild && !T->rchild){
+        return 1;
+    } else {
+        return LeafCount(T->lchild)+ LeafCount(T->rchild);
+    }
+}
+int degree1(BiTree T){
+    if(T== nullptr)
+        return 0;
+    else if(!T->lchild && T->rchild)
+        return 1;
+    else if(T->lchild && !T->rchild)
+        return 1;
+    else{
+        return degree1(T->lchild) + degree1(T->rchild);
+    }
+}
 void InThreading(BiThrTree &T){
     if(T){
         InThreading(T->lchild);
